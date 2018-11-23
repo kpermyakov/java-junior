@@ -1,9 +1,13 @@
 package com.acme.edu;
 
 
+import java.util.Arrays;
+
 public class TypeSafeLogger {
     private static final String PRIMITIVE_PREFIX = "primitive: ";
     public static final String CHAR_PREFIX = "char: ";
+    private static final String PRIMITIVE_ARRAYS = "primitives array: ";
+    private static final String PRIMITIVE_MATRIX = "primitives matrix: ";
 
     /**
      * OCP
@@ -24,5 +28,19 @@ public class TypeSafeLogger {
      */
     private static void print(String decoratedMessage) {
         System.out.println(decoratedMessage);
+    }
+
+    public static void log(int[] message) {
+        String decoratedMessage = PRIMITIVE_ARRAYS + Arrays.toString(message)
+                .replace('[','{')
+                .replace(']','}');
+        print(decoratedMessage);
+    }
+
+    public static void log(int[][] message) {
+        String decoratedMessage = PRIMITIVE_MATRIX + Arrays.deepToString(message)
+                .replace('[','{')
+                .replace(']','}');
+        print(decoratedMessage);
     }
 }
