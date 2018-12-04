@@ -1,12 +1,24 @@
 package demo.ooad;
 
 public class Logger {
-    //[GRASP] Creator
-    private LoggerFilter filter = new MessageLengthLogFilter(10); //Stateful
-    private LogSaver saver = new ConsoleLogSaver(); //Stateless
+    private LoggerFilter filter; //DI
+    //[GoF] Factory Method
+    private LogSaver saver //[PoEAA]
+            = Registry
+                .createLogSaverFactory()
+                    .createLogSaver();
+
+    //Constructor DI
+    public Logger(LoggerFilter filter) {
+        this.filter = filter;
+    }
+
+    public void setFilter(LoggerFilter filter) {
+        this.filter = filter;
+    }
 
     //10 MSLoC
-    public void log(String message, int severity) {
+    public void log(Request message, int severity) {
         if(!filter.filter(message, severity)) {
             saver.save(message);
         }
