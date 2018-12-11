@@ -1,11 +1,13 @@
 package demo.ooad;
 
+//Service
 public class Logger {
-    private LoggerFilter filter; //DI
+    private LoggerFilter filter
+            = new MessageLengthLogFilter(10);
+
     //[GoF] Factory Method
     private LogSaver saver //[PoEAA]
-            = Registry
-                .createLogSaverFactory()
+            = Registry.createLogSaverFactory()
                     .createLogSaver();
 
     //Constructor DI
@@ -13,14 +15,17 @@ public class Logger {
         this.filter = filter;
     }
 
+    //Setter DI
     public void setFilter(LoggerFilter filter) {
         this.filter = filter;
     }
 
     //10 MSLoC
-    public void log(Request message, int severity) {
-        if(!filter.filter(message, severity)) {
-            saver.save(message);
+    public void log(String command, int severity) {
+        //not OOAD: "ask"
+        if(!filter.filter(command, severity)) {
+            //OOAD: "tell"
+            saver.save(command);
         }
     }
 }
