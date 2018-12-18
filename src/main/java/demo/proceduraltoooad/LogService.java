@@ -1,5 +1,8 @@
 package demo.proceduraltoooad;
 
+/**
+ * Stateful!!!
+ */
 public class LogService {
     private ConsolePrinter saver;
 
@@ -8,6 +11,6 @@ public class LogService {
     }
 
     public void log(IntMessage message) {
-        saver.save(message.getDecoratedMessage());
+        saver.print(message.getDecoratedMessage());
     }
 }
