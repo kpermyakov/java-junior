@@ -1,49 +1,65 @@
 package demo.iodemo;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Date;
 
 public class IODemo {
     public static void main(String[] args) {
-        File file = new File("test.txt");//Path
+        File file = new File("test.txt"); //Path responsibility
 
-        try (PrintWriter out =
-                    new PrintWriter(
-                            new FileWriter(file, true))) {
+        //Writing:
+        try (ObjectOutputStream out = new ObjectOutputStream(
+                    new BufferedOutputStream(
+                        new FileOutputStream(file)))) {
 
-            out.println("тест 1");
-            out.println("тест 2");
-            out.println("тест 3");
+            out.writeObject(new Cat("1"));
+            out.writeObject(new Cat("2"));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //-----
 
-        try (BufferedReader in =
-                     new BufferedReader(new InputStreamReader(
-                        new BufferedInputStream(
-                            new FileInputStream(file), 8000),
-                             "UTF-8"))) {
+        try (ObjectInputStream in = new ObjectInputStream(
+                new BufferedInputStream(
+                        new FileInputStream(file)))) {
 
-            String readLine = null;
-            while((readLine = in.readLine()) != null) {
-                System.out.println(">>> " + readLine);
+            Cat cat = null;
+            while ( (cat = (Cat) in.readObject()) != null) {
+                System.out.println(">>> " + cat);
             }
 
-        } catch (IOException e) {
+        } catch (EOFException e) {
+
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+}
 
-        try {
+//JAXP API: SAX + DOM
+//JAXB API: XSD <-> class, xml <-> obj
 
-            Files.lines(Paths.get("test.txt"))
-                    .forEach(System.out::println);
+//obj <-> json: GSON, Jackson
+class Cat implements Serializable {
+//    private static long serialVerId = 0L;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private String name;
+//    @JsonIgnore
+    private transient Date smth;
+
+    public Cat(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Cat {" +
+                "name='" + name + '\'' +
+                '}';
     }
 }
